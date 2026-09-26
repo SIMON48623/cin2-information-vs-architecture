@@ -8,9 +8,12 @@ the full, configuration-driven analysis graph, synthetic demonstration data,
 the pre-specified analysis plans, and summary-only reference results.
 
 No patient data are present. **SYNTHETIC — not patient data.** The committed
-CSV files were independently generated from published Table 2 marginal
-summaries. Their outcome coefficients are human-selected and were not estimated
-from real data. Consequently, synthetic results will not equal article results.
+CSV files were independently generated from the published baseline marginal
+summaries (`results/reference/baseline_characteristics.csv`). Their outcome
+coefficients are human-selected and were not estimated from real data.
+Consequently, synthetic results will not equal article results.
+
+The full baseline characteristics table cited in Section 3.1 of the article is in results/reference/baseline_characteristics.md.
 
 ## What is reproduced
 
@@ -68,10 +71,10 @@ Run the automated smoke test with:
 python -m pytest tests/test_smoke.py -q
 ```
 
-Outputs include Figures 1–5 and Supplementary Figure S1, summary JSON files,
-performance tables, and a run summary that records the mode, device, and
-elapsed time. The output directory is ignored by Git because row-level files
-must never be committed.
+Outputs include plots of the data behind Figures 2–5 (see `docs/paper_map.md`),
+summary JSON files, performance tables, and a run summary that records the mode,
+device, and elapsed time. The output directory is ignored by Git because
+row-level files must never be committed.
 
 ## Authorized local data
 
