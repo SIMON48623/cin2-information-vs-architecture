@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the associated article."
+title: "cin2-information-vs-architecture"
+type: software
+authors:
+  - family-names: Wu
+    given-names: Yuzhang
+  - family-names: Wang
+    given-names: Aihong
+repository-code: "https://github.com/SIMON48623/cin2-information-vs-architecture"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Information rather than architecture: cross-learner attribution and clinician–model complementarity in CIN2+ risk prediction for women referred for colposcopy"
+  authors:
+    - family-names: Wu
+      given-names: Yuzhang
+    - family-names: Wang
+      given-names: Aihong
+  journal: Frontiers in Oncology
+  doi: "DOI-TO-BE-ADDED-AFTER-ACCEPTANCE"
