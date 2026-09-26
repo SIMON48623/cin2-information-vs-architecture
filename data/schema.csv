@@ -1,0 +1,17 @@
+name,type,coding,role
+age,numeric,years,predictor
+gravidity,numeric,count,predictor
+parity,numeric,count,predictor
+HPV_overall,binary,0=no;1=yes,predictor
+HPV16,binary,0=no;1=yes,predictor
+HPV18,binary,0=no;1=yes,predictor
+HPV_other_hr,binary,0=no;1=yes,predictor
+iodine_negative,binary,0=no;1=yes,predictor
+atypical_vessels,binary,0=no;1=yes,predictor
+child_alive,binary,0=no;1=yes,predictor
+menopausal_status,binary,0=no;1=yes,predictor
+pathology_fig,binary,0=negative;1=positive,predictor
+cytology_grade,categorical,0=NILM;1=ASC-US;2=ASC-H;3=LSIL;4=HSIL;5=AGC,predictor
+colpo_impression,categorical,0=normal;1=mild;2=moderate;3=severe;4=highly suspicious for CIN3+ (0 not observed in this cohort),predictor
+TZ_type,categorical,1=type 1 (fully visible);2=type 2 (partially visible);3=type 3 (not visible),predictor
+pathology_group,binary,0=less than CIN2;1=CIN2 or worse,outcome

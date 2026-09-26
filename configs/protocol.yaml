@@ -1,0 +1,79 @@
+study:
+  outcome: pathology_group
+  positive_class: 1
+  development_n: 879
+  external_n: 103
+seeds:
+  model: 13
+  bootstrap: 13
+  permutation: 13
+  folds: 42
+runtime:
+  torch_num_threads: 8
+  torch_deterministic_algorithms: true
+cross_validation:
+  class: StratifiedKFold
+  n_splits: 5
+  shuffle: true
+  random_state: 42
+  inner_validation_fraction: 0.15
+  inner_random_state: 13
+features:
+  numeric: [age, gravidity, parity]
+  binary: [HPV_overall, HPV16, HPV18, HPV_other_hr, iodine_negative, atypical_vessels, child_alive, menopausal_status]
+  categorical: [cytology_grade, colpo_impression, TZ_type]
+  clinician: pathology_fig
+  groups:
+    G1: [age, menopausal_status, gravidity, parity, child_alive]
+    G2: [HPV_overall, HPV16, HPV18, HPV_other_hr]
+    G3: [cytology_grade]
+    G4: [colpo_impression, TZ_type, iodine_negative, atypical_vessels]
+    G5: [pathology_fig]
+preprocessing:
+  numeric: median imputation then standardization, fitted inside each training fold
+  categorical: most-frequent imputation then one-hot encoding, fitted inside each training fold
+  tabular_neural: fold-fitted categorical vocabulary; unseen values map to zero
+  tabpfn: median-imputed numeric values and fold-fitted integer categorical encoding
+models:
+  lr: {max_iter: 2000, solver: lbfgs, class_weight: balanced, random_state: 13}
+  xgb: {n_estimators: 500, learning_rate: 0.03, max_depth: 3, subsample: 0.9, colsample_bytree: 0.9, reg_lambda: 1.0, min_child_weight: 1, gamma: 0, objective: binary:logistic, eval_metric: logloss, tree_method: hist, random_state: 13}
+  rf: {random_state: 13}
+  lgbm: {random_state: 13}
+  catboost: {random_seed: 13, verbose: 0}
+  ftt: {batch_size: 128, epochs: 100, patience: 10, architecture: official_defaults}
+  tab: {batch_size: 128, epochs: 80, learning_rate: 0.0008, weight_decay: 0.0001, patience: 10, d_token: 64, n_heads: 4, n_layers: 2, d_ff: 128, dropout: 0.15}
+  tabmfm:
+    batch_size: 128
+    d_model: 64
+    n_heads: 4
+    n_layers: 2
+    d_ff: 128
+    dropout: 0.15
+    pretrain_epochs: 20
+    pretrain_learning_rate: 0.001
+    pretrain_weight_decay: 0.0001
+    finetune_epochs: 60
+    finetune_learning_rate: 0.0008
+    finetune_weight_decay: 0.0001
+    patience: 8
+    configurations:
+      tabmfm_pre030_colid1: {pretrain: true, mask_ratio: 0.30, column_identity: true}
+      tabmfm_pre015_colid1: {pretrain: true, mask_ratio: 0.15, column_identity: true, full_only: true}
+      tabmfm_pre030_colid0: {pretrain: true, mask_ratio: 0.30, column_identity: false, full_only: true}
+      tabmfm_nopre_colid1: {pretrain: false, mask_ratio: 0.30, column_identity: true}
+  tabpfn: {random_state: 13, weights_environment_variable: TABPFN_MODEL_PATH, remote_api: false}
+statistics:
+  bootstrap_replicates: 2000
+  bootstrap_unit: patient
+  shared_resample_indices: true
+  delong: Sun and Xu fast algorithm
+  multiplicity: Holm
+  calibration: nested sigmoid or isotonic selected by training-fold Brier score
+  thresholding: nested Youden and 95-percent-sensitivity rules
+  confidence_intervals: Wilson for proportions
+  decision_curve_thresholds: [0.05, 0.40, 0.01]
+  kendall_w_permutations: 10000
+devices:
+  paper_main_analysis: cpu
+  analysis_A_classical: cpu
+  analysis_A_neural_and_tabpfn: cuda

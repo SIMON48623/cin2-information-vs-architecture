@@ -1,0 +1,12 @@
+{
+ "full": {
+  "auroc_as_recorded": 0.7572816793596013,
+  "auroc_set_missing": 0.7593250904939216,
+  "max_abs_prob_change": 0.7314982688970749
+ },
+ "nopf": {
+  "auroc_as_recorded": 0.6886165782269678,
+  "auroc_set_missing": 0.6908675739844571,
+  "max_abs_prob_change": 0.7077851887505698
+ }
+}

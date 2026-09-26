@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the associated article."
+title: "cin2-information-vs-architecture"
+type: software
+authors:
+  - family-names: Wu
+    given-names: Yuzhang
+repository-code: "https://github.com/SIMON48623/cin2-information-vs-architecture"
+license: MIT
