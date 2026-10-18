@@ -1,7 +1,8 @@
 # Data
 
 **SYNTHETIC — not patient data.** The two committed CSV files are generated
-only from the published marginal summaries in Table 2. Variables are sampled
+only from the baseline marginal summaries in
+`results/reference/baseline_characteristics.csv`. Variables are sampled
 independently. The outcome coefficients are human-selected for plausible
 directions and were not estimated from, fitted to, or sampled from patient
 records. Synthetic results are demonstrations and will not reproduce the

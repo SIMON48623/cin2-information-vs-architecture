@@ -77,7 +77,7 @@ axes[-1].set_xticks([-0.06, -0.03, 0, 0.03, 0.06, 0.09, 0.12])
 fig.text(0.99, 0.005, "Filled marker: 95% CI excludes zero. p: DeLong test, unadjusted.", ha="right", fontsize=7.2, color=INK2)
 fig.tight_layout(h_pad=1.2); save(fig, "Figure2_effect_sizes")
 
-# ------------------------------------------------ Figure 3: calibration and decision curves (reference models)
+# ------------------------------------------------ Figure 5a–b: calibration and decision curves (reference models)
 REF = [("lr__full", "Logistic regression", BLUE, "-", "o"), ("catboost__full", "CatBoost", ORANGE, "--", "s"),
        ("tabpfn__full", "TabPFN", AQUA, ":", "^")]
 REF = [item for item in REF if f"cal_{item[0]}" in A.files and item[0] in N["dca"]]
@@ -96,7 +96,7 @@ a2.set_xlim(0.05, 0.40); a2.set_ylim(-0.02, 0.26); a2.set_xlabel("Threshold prob
 a2.set_title("b  Decision curves", loc="left", fontsize=9, fontweight="bold"); a2.legend(frameon=False, fontsize=7.4, loc="upper right"); clean(a2)
 fig.tight_layout(w_pad=2.2); save(fig, "Figure5_calibration_dca")
 
-# ------------------------------------------------ Figure 4: learning curve (logistic regression, exact pipeline)
+# ------------------------------------------------ Figure 5c: learning curve (logistic regression, exact pipeline; saved as FigureS1_learning_curve)
 fig, ax = plt.subplots(figsize=(4.2, 3.1))
 for key, lab, col, ls, mk in [("lr__full", "With clinician assessment", BLUE, "-", "o"), ("lr__nopf", "Without", ORANGE, "--", "s")]:
     pts = N["learning_curve"][key]; x = [p["n_train"] for p in pts]; m = np.array([p["mean"] for p in pts]); s = np.array([p["sd"] for p in pts])
@@ -105,7 +105,7 @@ ax.set_xlabel("Training patients per fold"); ax.set_ylabel("Out-of-fold AUROC");
 ax.legend(frameon=False, fontsize=7.6, loc="lower right"); clean(ax); ax.grid(axis="y", color="#eeeeee", lw=0.7); ax.set_axisbelow(True)
 fig.tight_layout(); save(fig, "FigureS1_learning_curve")
 
-# ------------------------------------------------ Figure 5: complementarity
+# ------------------------------------------------ Figure 4: complementarity
 fig, (a1, a2) = plt.subplots(1, 2, figsize=(6.8, 3.3))
 W = [0.10, 0.20, 0.30]; FAMS = ["xgb", "lgbm", "catboost", "rf", "ftt", "tabpfn", "tab", "tabmfm_pre030_colid1", "tabmfm_nopre_colid1"]
 FAMS = [family for family in FAMS if f"{family}|0.10" in R["B2"]]
@@ -119,7 +119,7 @@ a1.errorbar([w * 100 for w in W], [s["rescue_rate"] * 100 for s in lr],
 a1.plot([], [], color=LIGHT, lw=1.0, label=f"{len(FAMS)} other model families")
 a1.set_xlim(0, 32); a1.set_ylim(0, 62); a1.set_xticks([0, 10, 20, 30])
 a1.set_xlabel("Clinician-negative women re-reviewed (%)"); a1.set_ylabel("Clinician-missed CIN2+ found (%)")
-a1.set_title("a  Rescue yield", loc="left", fontsize=9, fontweight="bold"); a1.legend(frameon=False, fontsize=7.2, loc="upper left"); clean(a1)
+a1.set_title("a  Yield among clinician-negative women", loc="left", fontsize=9, fontweight="bold"); a1.legend(frameon=False, fontsize=7.2, loc="upper left"); clean(a1)
 b = R["B3"]; pt = np.array(b["pt"])
 a2.plot(pt, b["all"], color=GREY, lw=1.0, label="Refer all"); a2.axhline(0, color="#555555", lw=0.8, label="Refer none")
 a2.plot(pt, b["S1"], color=INK2, lw=1.4, ls=(0, (1.5, 1.5)), label="Clinician alone")
@@ -128,7 +128,7 @@ a2.plot(pt, b["S3"], color=BLUE, lw=1.8, label="Clinician, then model")
 a2.set_xlim(0.05, 0.40); a2.set_ylim(-0.02, 0.26); a2.set_xlabel("Threshold probability"); a2.set_ylabel("Net benefit")
 a2.set_title("b  Referral strategies (logistic regression)", loc="left", fontsize=9, fontweight="bold"); a2.legend(frameon=False, fontsize=7.2, loc="upper right"); clean(a2)
 fig.tight_layout(w_pad=2.2); save(fig, "Figure4_complementarity")
-# ------------------------------------------------ Figure 6: group Shapley attribution across ten families
+# ------------------------------------------------ Figure 3: group Shapley attribution across ten families
 NA = json.loads((ARGS.results / "numbers_A.json").read_text(encoding="utf-8"))
 FAM10 = NA["families"]
 GORD = [("G5", "Clinician\nassessment"), ("G3", "Cytology"), ("G2", "HPV testing"), ("G4", "Colposcopic\nfindings"), ("G1", "Demographic and\nreproductive history")]

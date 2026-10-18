@@ -25,7 +25,11 @@ subsets of five clinical variable groups. Downstream scripts implement DeLong
 inference, shared patient-level bootstrap resampling, Holm adjustment, nested
 calibration, nested thresholds, Wilson intervals, decision curves, clinician–
 model complementarity, exact group Shapley values, Kendall's W, permutation
-inference, age sensitivity analysis, and within-stratum calibration.
+inference, age sensitivity analysis, and within-stratum calibration. A repeated
+cross-validation (analysis C: ten repetitions of stratified five-fold
+cross-validation, each with a new fold assignment and new seeds) re-estimates
+every comparison with logistic regression and tests it with the corrected
+repeated k-fold t test of Bouckaert and Frank (2004).
 
 The article numbers are provided only as summary results in
 `results/reference/`. Patient-level OOF probabilities and external predictions
@@ -106,6 +110,27 @@ error `1e-6`. Neural and TabPFN comparisons report probability differences and
 both AUROCs; an AUROC difference above `0.001` is a failed reproduction check.
 CPU and GPU floating-point results are not expected to be bitwise identical.
 
+## Repeated cross-validation (analysis C)
+
+The written specification is `docs/prespecification/C_repeated_cv_plan.md`
+(its SHA-256 is in `SHA256SUMS`). In repetition r (r = 1–10) the fold
+`random_state` is 1000 + r, and the model seed, the inner early-stopping split
+seed and the seeds of all stochastic learners are 2000 + r; all other settings
+follow `configs/protocol.yaml`. The article's run used CPU for every family.
+Summary results are in `results/repeated_cv/` (`summary_vs_lr.csv`,
+`auroc_by_repeat.csv`, `run_summary.json`); the per-repetition out-of-fold files
+stay local in `outputs/`.
+
+```bash
+python scripts/04_repeated_cv.py --data path/to/development.xlsx \
+  --sheet 0 --output outputs/repeated_cv --repeats 10 --neural-device cpu
+```
+
+```bash
+python analysis/15_repeated_cv.py \
+  --input outputs/repeated_cv --output results/repeated_cv
+```
+
 ## TabPFN weights
 
 TabPFN is local-only in this project. Install the pinned package, obtain the
@@ -115,13 +140,18 @@ checkpoint file. Weight files are not distributed here. Remote inference APIs
 are not used. A run without that local file marks TabPFN as skipped and never
 constructs a substitute prediction.
 
+The article used tabpfn 8.5.0 with its default classifier checkpoint,
+`tabpfn-v3-classifier-v3_default.ckpt` (SHA-256
+`d0d865d54dfbc524f5703104be90620182dca7e5fb2c16de72e9959ea18f3988`).
+
 ## Reproducibility and privacy
 
-The model seed is 13 and the fold definition is
-`StratifiedKFold(5, shuffle=True, random_state=42)`. Preprocessing is fit inside
-training folds. Neural early stopping uses a seed-13 stratified 15% subset of
-the outer training fold; outer validation records never control training.
-Detailed settings are in `docs/protocol.md`.
+In the primary analyses the model seed is 13 and the fold definition is
+`StratifiedKFold(5, shuffle=True, random_state=42)`; analysis C uses the seeds
+given above. Preprocessing is fit inside training folds. Neural early stopping
+uses a seed-13 stratified 15% subset of the outer training fold; outer
+validation records never control training. Detailed settings are in
+`docs/protocol.md`.
 
 Before release, run:
 
@@ -145,6 +175,8 @@ release guard, not a substitute for institutional disclosure review.
 - `docs/paper_map.md`: article table/figure provenance and explicitly unmapped
   items.
 - `results/reference/`: summary-only article results.
+- `results/repeated_cv/`: summary-only results of the repeated cross-validation
+  (analysis C).
 - `tools/`: privacy and local reproduction audits.
 
 ## Citation

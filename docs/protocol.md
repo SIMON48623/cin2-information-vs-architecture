@@ -4,7 +4,7 @@ The complete machine-readable protocol is in `configs/protocol.yaml`. Random
 seed 13 is used for model fitting, calibration selection, bootstrap sampling,
 and permutation tests. The single patient-level split is
 `StratifiedKFold(5, shuffle=True, random_state=42)` and is reused by every
-model and feature set.
+model and feature set in the primary analyses.
 
 Torch CPU fitting uses `torch.set_num_threads(8)` before model construction,
 matching the original rerun script. Deterministic algorithms are enabled. The
@@ -58,3 +58,18 @@ The article's main pipeline was run on CPU. In analysis A, classical families
 were run on CPU and the five neural/foundation-model families on CUDA. A family
 and all its 31 subsets must stay on one device. GPU and CPU floating-point
 results need not be bit-identical.
+
+Analysis C (repeated cross-validation) refits the twelve full-set configurations
+in ten repetitions of `StratifiedKFold(5, shuffle=True)`. In repetition r
+(1–10) the fold `random_state` is 1000 + r, and the model seed, the inner
+early-stopping split seed and the seeds of all stochastic learners are 2000 +
+r; all other settings follow `configs/protocol.yaml`. Each configuration is
+compared with logistic regression by the corrected repeated k-fold t test
+(Bouckaert and Frank, 2004) on the 50 fold-level AUROC differences, with Holm
+adjustment across the eleven comparisons. Analysis C was run on CPU. With the
+original seeds, the seed-configurable code reproduces the pooled out-of-fold
+AUROC of all twelve primary configurations exactly.
+
+The article used tabpfn 8.5.0 with its default classifier checkpoint,
+`tabpfn-v3-classifier-v3_default.ckpt` (SHA-256
+`d0d865d54dfbc524f5703104be90620182dca7e5fb2c16de72e9959ea18f3988`).
