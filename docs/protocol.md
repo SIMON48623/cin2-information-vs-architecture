@@ -34,6 +34,9 @@ masked numeric values and categorical levels, and classifies a mean-pooled
 representation through LayerNorm, dropout, and a linear head. TabPFN receives
 median-imputed numeric columns plus integer-encoded categorical columns and the
 corresponding categorical feature indices; it never receives one-hot data.
+The main analysis and repeated cross-validation use the default TabPFN-3
+weights from tabpfn 8.5.0, `tabpfn-v3-classifier-v3_default.ckpt` (SHA-256
+`d0d865d54dfbc524f5703104be90620182dca7e5fb2c16de72e9959ea18f3988`).
 
 The twelve configured model variants comprise five classical families,
 FT-Transformer, TabPFN, a tabular transformer, the two primary Tab-MFM

@@ -84,7 +84,7 @@ def _fit_categories(train_df: pd.DataFrame, other_dfs: list[pd.DataFrame], colum
     return [train, *others], mappings
 
 
-def _tensor_loader(x_num, x_cat, y, batch_size, shuffle):
+def _tensor_loader(x_num, x_cat, y, batch_size, shuffle, seed):
     import torch
     from torch.utils.data import DataLoader, TensorDataset
     dataset = TensorDataset(
@@ -92,7 +92,7 @@ def _tensor_loader(x_num, x_cat, y, batch_size, shuffle):
         torch.from_numpy(x_cat).long(),
         torch.from_numpy(y.astype(np.float32)).float(),
     )
-    generator = torch.Generator().manual_seed(13)
+    generator = torch.Generator().manual_seed(seed)
     return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, generator=generator)
 
 
@@ -243,16 +243,17 @@ def _train_deep_oof(frame, y, folds, columns, family, config, device, fast):
     batch_size = int(ftt_cfg["batch_size"] if kind == "ftt" else tab_cfg["batch_size"] if kind == "tab" else mfm_cfg["batch_size"])
     predictions = np.full(len(y), np.nan)
     selected_epochs, parameter_counts = [], []
-    set_seed(13)
+    model_seed = int(config["seeds"]["model"])
+    set_seed(model_seed)
     for fold_number, (outer_train, outer_valid) in enumerate(folds, 1):
         fit_idx, stop_idx = _inner_split(outer_train, y, config)
         nums, cats, cards, numeric, _ = _make_deep_arrays(
             frame, fit_idx, stop_idx, outer_valid, columns, config, kind
         )
-        fit_loader = _tensor_loader(nums[0], cats[0], y[fit_idx], batch_size, True)
-        stop_loader = _tensor_loader(nums[1], cats[1], y[stop_idx], batch_size, False)
-        valid_loader = _tensor_loader(nums[2], cats[2], y[outer_valid], batch_size, False)
-        set_seed(13)
+        fit_loader = _tensor_loader(nums[0], cats[0], y[fit_idx], batch_size, True, model_seed)
+        stop_loader = _tensor_loader(nums[1], cats[1], y[stop_idx], batch_size, False, model_seed)
+        valid_loader = _tensor_loader(nums[2], cats[2], y[outer_valid], batch_size, False, model_seed)
+        set_seed(model_seed)
         if kind == "ftt":
             model = OfficialFTTransformer(
                 n_cont_features=len(numeric), cat_cardinalities=cards, d_out=1,
@@ -350,12 +351,13 @@ def _train_tabpfn_oof(frame, y, folds, columns, config, device):
             "model_class": _model_class_name("tabpfn"),
         }
     predictions = np.full(len(y), np.nan)
-    set_seed(13)
+    model_seed = int(config["seeds"]["model"])
+    set_seed(model_seed)
     for train, valid in folds:
         x_train, x_valid, n_numeric = _tabpfn_arrays(frame.iloc[train], frame.iloc[valid], columns, config)
         model = TabPFNClassifier(
             categorical_features_indices=list(range(n_numeric, x_train.shape[1])),
-            random_state=13,
+            random_state=model_seed,
             device=device,
             model_path=weights,
         )
@@ -435,8 +437,8 @@ def fit_final_tabmfm_predict(train, y, external, columns, config, epochs, device
         n_head=int(cfg["n_heads"]), n_layers=int(cfg["n_layers"]), d_ff=int(cfg["d_ff"]),
         dropout=float(cfg["dropout"]), use_col_id_emb=True,
     ).to(device)
-    train_loader = _tensor_loader(nums[0], cats[0], y, int(cfg["batch_size"]), True)
-    external_loader = _tensor_loader(nums[1], cats[1], np.zeros(len(external), dtype=int), int(cfg["batch_size"]), False)
+    train_loader = _tensor_loader(nums[0], cats[0], y, int(cfg["batch_size"]), True, 13)
+    external_loader = _tensor_loader(nums[1], cats[1], np.zeros(len(external), dtype=int), int(cfg["batch_size"]), False, 13)
     pre_epochs = 1 if fast else int(cfg["pretrain_epochs"])
     pre_optimizer = torch.optim.AdamW(model.parameters(), lr=float(cfg["pretrain_learning_rate"]),
                                       weight_decay=float(cfg["pretrain_weight_decay"]))

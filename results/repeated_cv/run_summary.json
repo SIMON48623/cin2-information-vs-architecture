@@ -1,0 +1,117 @@
+{
+  "devices_by_configuration": {
+    "catboost__full": "cpu",
+    "ftt__full": "cpu",
+    "lgbm__full": "cpu",
+    "lr__full": "cpu",
+    "rf__full": "cpu",
+    "tab__full": "cpu",
+    "tabmfm_nopre_colid1__full": "cpu",
+    "tabmfm_pre015_colid1__full": "cpu",
+    "tabmfm_pre030_colid0__full": "cpu",
+    "tabmfm_pre030_colid1__full": "cpu",
+    "tabpfn__full": "cpu",
+    "xgb__full": "cpu"
+  },
+  "n_repeats": 10,
+  "n_splits": 5,
+  "neural_selected_epoch_ranges": {
+    "ftt__full": {
+      "max": 40,
+      "min": 1
+    },
+    "tab__full": {
+      "max": 49,
+      "min": 1
+    },
+    "tabmfm_nopre_colid1__full": {
+      "max": 55,
+      "min": 1
+    },
+    "tabmfm_pre015_colid1__full": {
+      "max": 52,
+      "min": 1
+    },
+    "tabmfm_pre030_colid0__full": {
+      "max": 42,
+      "min": 1
+    },
+    "tabmfm_pre030_colid1__full": {
+      "max": 52,
+      "min": 1
+    }
+  },
+  "packages": {
+    "catboost": "1.2.10",
+    "lightgbm": "4.7.0",
+    "scikit-learn": "1.7.2",
+    "tabpfn": "8.5.0",
+    "torch": "2.5.1",
+    "xgboost": "3.1.3"
+  },
+  "repeat_elapsed_seconds": {
+    "r01": 250.1180369000067,
+    "r02": 237.03419279999798,
+    "r03": 211.1781525000115,
+    "r04": 269.50431829999434,
+    "r05": 247.08448610000778,
+    "r06": 241.98724129999755,
+    "r07": 274.46509820001666,
+    "r08": 253.96538459998555,
+    "r09": 286.0585463999887,
+    "r10": 245.4935048999614
+  },
+  "seeds": [
+    {
+      "fold": 1001,
+      "inner": 2001,
+      "model": 2001
+    },
+    {
+      "fold": 1002,
+      "inner": 2002,
+      "model": 2002
+    },
+    {
+      "fold": 1003,
+      "inner": 2003,
+      "model": 2003
+    },
+    {
+      "fold": 1004,
+      "inner": 2004,
+      "model": 2004
+    },
+    {
+      "fold": 1005,
+      "inner": 2005,
+      "model": 2005
+    },
+    {
+      "fold": 1006,
+      "inner": 2006,
+      "model": 2006
+    },
+    {
+      "fold": 1007,
+      "inner": 2007,
+      "model": 2007
+    },
+    {
+      "fold": 1008,
+      "inner": 2008,
+      "model": 2008
+    },
+    {
+      "fold": 1009,
+      "inner": 2009,
+      "model": 2009
+    },
+    {
+      "fold": 1010,
+      "inner": 2010,
+      "model": 2010
+    }
+  ],
+  "tabpfn_weights_file": "tabpfn-v3-classifier-v3_default.ckpt"
+}
